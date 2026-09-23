@@ -1,0 +1,26 @@
+application:
+  subdomain: frog
+  multi_instance: false
+  public_path:
+    - /
+    - /admin
+  entries:
+    - id: main
+      title: "旅行青蛙"
+      path: /
+    - id: admin
+      title: "管理后台"
+      path: /admin
+  upstreams:
+    - location: /
+      backend: http://frog:8980/
+services:
+  frog:
+    # upstream: heizicao/frog-nas:1.0.5
+    image: docker.1ms.run/heizicao/frog-nas:1.0.5
+    environment:
+      - TZ=Asia/Shanghai
+      - FROG_FAITHFUL=1
+      - PUBLIC_URL=${LAZYCAT_PUBLIC_URL}
+    binds:
+      - /lzcapp/var/data:/app/data

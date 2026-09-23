@@ -1,0 +1,41 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: dist/frog-nas.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: frog
+
+build:
+  run_buildscript: false
+
+images:
+  # Docker Hub 纯 SemVer tag（当前 1.0.5），mirror 模式
+  - id: frog
+    target: service
+    service: frog
+    source: heizicao/frog-nas
+    channel: stable
+    sort: semver
+    tag_regex: '^\d+\.\d+\.\d+$'
+    delivery:
+      mode: mirror
+      require_digest_match: true
+
+stores:
+  official:
+    # Official store publication is intentionally disabled; publish only to MiaoMiao Store.
+    enabled: false
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: 旅行青蛙
+    summary: 旅行青蛙·中国之旅 NAS 版：支持消息推送与 AI Agent 操作接口
